@@ -105,9 +105,10 @@ func (m model) View() string {
 	header := lipgloss.NewStyle().
 		Bold(true).
 		Foreground(lipgloss.Color("205")).
-		Render("🌱 gitpick — select files with [space], confirm with [enter], or [q] to quit\n\n")
+		Render("🌱 gitpick — select files with [space], confirm with [enter], or [q] to quit")
 
 	b.WriteString(header)
+	b.WriteString("\n\n")
 
 	for i, listItem := range m.list.Items() {
 		it := listItem.(item)
@@ -117,13 +118,15 @@ func (m model) View() string {
 		}
 
 		line := fmt.Sprintf("%s %s", prefix, it.title)
-		cursor := "  " // default cursor
 		if i == m.list.Index() {
-			cursor = lipgloss.NewStyle().
+			cursor := lipgloss.NewStyle().
+				MarginLeft(1).
 				Foreground(lipgloss.Color("57")).
-				Render("➤ ")
+				Render("➤")
+			line = cursor + " " + line
+		} else {
+			line = "  " + line
 		}
-		line = cursor + line
 		b.WriteString(line + "\n")
 	}
 
